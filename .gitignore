@@ -1,0 +1,17 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+.DS_STORE
+
+# Dependency directories
+node_modules
+
+# Build directories
+dist
+
+# Coverage directory
+coverage
+
+# Editor
+.vscode

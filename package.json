@@ -1,0 +1,31 @@
+{
+  "name": "weak-pool",
+  "version": "0.0.1",
+  "description": "Object pool that scales dynamically utilizing strong and weak pooled object references.",
+  "type": "module",
+  "engines": {
+    "node": ">=14.6.0"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -f ./dist/* && tsc -p ./tsconfig.build.json",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "keywords": [
+    "Object",
+    "Pool",
+    "Dynamic"
+  ],
+  "author": "Michael Price <mikepricedev@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "weak-ref-cache": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^0.34.3",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.3"
+  }
+}

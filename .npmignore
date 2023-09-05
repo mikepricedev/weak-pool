@@ -1,0 +1,12 @@
+# Source files
+src
+
+# Typescript config
+tsconfig.json
+tsconfig.build.json
+
+# Coverage directory
+coverage
+
+# Editor
+.vscode
