@@ -100,8 +100,6 @@ export class WeakPool<Obj extends UnknownObject> {
       do {
         this.#weakPool.add(getWeakRef(this.#strongPool.pop() as Obj));
       } while (this.#maxStrongPoolSize < this.#strongPool.length);
-
-      this.#numGC = 0;
     } else if (
       this.#maxStrongPoolSize > this.#strongPool.length &&
       this.#weakPool.size > 0
@@ -117,9 +115,9 @@ export class WeakPool<Obj extends UnknownObject> {
           }
         }
       }
-
-      this.#numGC = 0;
     }
+
+    this.#numGC = 0;
 
     this.#poolSizeUpdateScheduled = false;
   };
