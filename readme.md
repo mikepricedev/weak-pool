@@ -62,15 +62,22 @@ You can use various properties to get insights about the pool:
 - `curMaxStrongPoolSize`: Maximum size of the strongly referenced object pool.
 - `numStrongPooledRefs`: Number of objects in the strongly referenced pool.
 - `numWeakPooledRefs`: Number of objects in the weakly referenced pool.
-- `numGC`: Weakly referenced objects that have been garbage collected since the last strong pool size update.
+- `numGC`: Number of weakly referenced objects that have been garbage collected since the last strong pool size update.
 
-### Advanced: Strong Pool Scaling Algorithm
+### Advanced
 
-You can define your own scaling algorithms:
+#### How Scaling Works
+
+The scaling algorithm determines the maximum size of the strong pool. The `WeakPool` then migrates objects to or from the weak reference pool as necessary to maintain the size limit of the strong pool.
+
+Pool size updates are scheduled to occur asynchronously whenever an object is released back to the pool. Subsequent release calls before the update execution will not schedule additional updates.
+
+#### Custom Scaling Algorithms
 
 ```ts
 import { PoolScalingSignature } from "weak-pool";
 
+// Define a scaling algorithm with the following signature
 const myPoolScalingAlgo: PoolScalingSignature = (
   numActiveObjects,
   curMaxStrongPoolSize,
@@ -82,6 +89,7 @@ const myPoolScalingAlgo: PoolScalingSignature = (
   return customSize;
 };
 
+// Add your algo to the pool constructor as a third argument
 const pool = new WeakPool(create, reset, myPoolScalingAlgo);
 ```
 
@@ -89,9 +97,9 @@ const pool = new WeakPool(create, reset, myPoolScalingAlgo);
 
 This WeakPool library relies on some advanced JavaScript features to optimize object pooling and memory management. Here are the key ECMAScript features the library utilizes:
 
-### Private Class Members (Proposed in ECMAScript 2022)
+### Private Class Members (ECMAScript 2022)
 
-The library uses private class fields and methods, a feature proposed for ECMAScript 2022, to encapsulate data and internal behaviors within the `WeakPool` class, promoting better data protection and integrity.
+The library uses private class fields and methods to encapsulate data and internal behaviors within the `WeakPool` class, promoting better data protection and integrity.
 
 ### WeakRef and FinalizationRegistry (ECMAScript 2021)
 
@@ -99,7 +107,7 @@ The `WeakRef` and `FinalizationRegistry` classes are vital components in the lib
 
 ### Browser and Node.js Compatibility
 
-Given the use of these advanced features, the library is expected to be compatible with environments supporting ECMAScript 2021 and proposed 2022 features. Users should ensure their target environments support these features.
+Given the use of these advanced features, the library is expected to be compatible with environments supporting ECMAScript 2021 and 2022. Users should ensure their target environments support these features.
 
 ## Contribution
 
