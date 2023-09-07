@@ -1,4 +1,4 @@
-import { PoolScalingSignature } from "./WeakPool";
+import { PoolScalingSignature } from "./WeakPool.js";
 
 /**
  * @internal

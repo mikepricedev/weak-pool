@@ -1,5 +1,5 @@
 import { getWeakRef } from "weak-ref-cache";
-import { defaultPoolScalingAlgo } from "./defaultPoolScalingAlgo";
+import { defaultPoolScalingAlgo } from "./defaultPoolScalingAlgo.js";
 
 /**
  * Creates a new object when the pool is empty.
