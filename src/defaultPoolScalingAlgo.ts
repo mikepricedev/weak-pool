@@ -1,8 +1,6 @@
 import { PoolScalingSignature } from "./WeakPool.js";
 
 /**
- * @internal
- *
  * Default implementation of {@link PoolScalingSignature}.
  *
  */
