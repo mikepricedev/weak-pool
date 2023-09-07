@@ -19,9 +19,6 @@
   ],
   "author": "Michael Price <mikepricedev@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "weak-ref-cache": "^1.0.0"
-  },
   "devDependencies": {
     "@vitest/coverage-v8": "^0.34.3",
     "prettier": "^3.0.3",
@@ -31,5 +28,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/mikepricedev/weak-pool.git"
+  },
+  "dependencies": {
+    "weak-ref-cache": "^1.0.3"
   }
 }

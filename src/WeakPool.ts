@@ -216,4 +216,4 @@ export class WeakPool<Obj extends UnknownObject> {
 
 export default WeakPool;
 
-export type UnknownObject = {};
+export type UnknownObject = object;
