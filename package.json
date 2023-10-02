@@ -1,6 +1,6 @@
 {
   "name": "weak-pool",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Object pool that scales dynamically utilizing strong and weak pooled object references.",
   "type": "module",
   "engines": {
