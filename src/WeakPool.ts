@@ -76,7 +76,7 @@ export class WeakPool<Obj extends UnknownObject> {
   }
 
   /**
-   * Number of active object that have been collected over the lifetime of the
+   * Number of active objects that have been collected over the lifetime of the
    * pool.  Should be `0`.
    */
   get numActiveGC(): number {

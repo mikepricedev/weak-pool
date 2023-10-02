@@ -63,6 +63,7 @@ You can use various properties to get insights about the pool:
 - `numStrongPooledRefs`: Number of objects in the strongly referenced pool.
 - `numWeakPooledRefs`: Number of objects in the weakly referenced pool.
 - `numGC`: Number of weakly referenced objects that have been garbage collected since the last strong pool size update.
+- `numActiveGC`: Number of active objects that have been collected over the lifetime of the pool. Should be `0`.
 
 ### Advanced
 
