@@ -43,7 +43,7 @@ export class WeakPool<Obj extends UnknownObject> {
    * Number of allocated objects currently in-use.
    */
   get numActiveObjects(): number {
-    return this.#numActiveObjects;
+    return this.#activeObjects.size;
   }
 
   /**
@@ -75,21 +75,29 @@ export class WeakPool<Obj extends UnknownObject> {
     return this.#numGC;
   }
 
-  static readonly #registeredWeakRefs = new WeakSet<WeakRef<UnknownObject>>();
+  /**
+   * Number of active object that have been collected over the lifetime of the
+   * pool.  Should be `0`.
+   */
+  get numActiveGC(): number {
+    return this.numActiveGC;
+  }
 
   readonly #weakPool = new Set<WeakRef<Obj>>();
 
   readonly #strongPool: Obj[] = [];
 
-  #numActiveObjects: number = 0;
+  readonly #activeObjects = new Set<WeakRef<Obj>>();
 
   #poolSizeUpdateScheduled: boolean = false;
 
   #numGC: number = 0;
 
+  #numActiveGC: number = 0;
+
   readonly #updatePoolSize = () => {
     this.#maxStrongPoolSize = this.#poolScalingAlgorithm(
-      this.numActiveObjects,
+      this.#activeObjects.size,
       this.#maxStrongPoolSize,
       this.#strongPool.length,
       this.#weakPool.size,
@@ -123,13 +131,19 @@ export class WeakPool<Obj extends UnknownObject> {
   };
 
   readonly #objFinalizer = new FinalizationRegistry<WeakRef<Obj>>((weakObj) => {
-    this.#weakPool.delete(weakObj);
+    if (this.#weakPool.delete(weakObj)) {
+      if (this.#numGC === Number.MAX_SAFE_INTEGER) {
+        return;
+      }
 
-    if (this.#numGC === Number.MAX_SAFE_INTEGER) {
-      return;
+      this.#numGC++;
+    } else if (this.#activeObjects.delete(weakObj)) {
+      if (this.#numActiveGC === Number.MAX_SAFE_INTEGER) {
+        return;
+      }
+
+      this.#numActiveGC++;
     }
-
-    this.#numGC++;
   });
 
   readonly #create: Create<Obj>;
@@ -160,8 +174,6 @@ export class WeakPool<Obj extends UnknownObject> {
    * Get an object from the pool.
    */
   acquire(): Obj {
-    this.#numActiveObjects++;
-
     const obj = this.#strongPool.pop();
 
     if (obj !== undefined) {
@@ -172,36 +184,44 @@ export class WeakPool<Obj extends UnknownObject> {
 
         if (strongObj !== undefined) {
           this.#strongPool.push(strongObj);
+
           break;
         }
       }
 
+      this.#activeObjects.add(getWeakRef(obj));
+
+      return obj;
+    } else {
+      const obj = this.#create();
+
+      const weakObj = getWeakRef(obj);
+
+      this.#objFinalizer.register(obj, weakObj);
+
+      this.#activeObjects.add(weakObj);
+
       return obj;
     }
-
-    return this.#create();
   }
 
   /**
    * Release an object to the pool.
    */
   release(obj: Obj): void {
-    this.#numActiveObjects = Math.max(this.#numActiveObjects - 1, 0);
+    const weakObj = getWeakRef(obj);
+
+    // Can release objects NOT ini from acquire method call.
+    if (!this.#activeObjects.delete(weakObj)) {
+      this.#objFinalizer.register(obj, weakObj);
+    }
 
     this.#reset(obj);
 
     if (this.#strongPool.length < this.#maxStrongPoolSize) {
       this.#strongPool.push(obj);
     } else {
-      const weakObj = getWeakRef(obj);
-
       this.#weakPool.add(weakObj);
-
-      if (!WeakPool.#registeredWeakRefs.has(weakObj)) {
-        this.#objFinalizer.register(obj, weakObj);
-
-        WeakPool.#registeredWeakRefs.add(weakObj);
-      }
     }
 
     if (this.#poolSizeUpdateScheduled) {
