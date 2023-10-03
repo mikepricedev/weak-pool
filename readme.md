@@ -94,6 +94,16 @@ const myPoolScalingAlgo: PoolScalingSignature = (
 const pool = new WeakPool(create, reset, myPoolScalingAlgo);
 ```
 
+### Utility Methods
+
+These methods provide a mechanism to test and retrieve data about the state of an object within the `WeakPool`. They can be used to determine if an object is actively in use, stored in the strong reference pool, or in the weak reference pool.
+
+- `isActive(obj: Obj): boolean`: Checks if the provided object is currently active and in use.
+
+- `isStrongPooled(obj: Obj): boolean`: Determines if the provided object is currently in the strongly referenced object pool.
+
+- `isWeakPooled(obj: Obj): boolean`: Determines if the provided object is currently in the weakly referenced object pool.
+
 ## ECMAScript Compatibility and Required Features
 
 This WeakPool library relies on some advanced JavaScript features to optimize object pooling and memory management. Here are the key ECMAScript features the library utilizes:

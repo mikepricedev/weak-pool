@@ -234,8 +234,7 @@ export class WeakPool<Obj extends UnknownObject> {
   }
 
   /**
-   * Determine if an object is currently active i.e. has been acquired from
-   * the pool.
+   * Determine if an object is currently active and in use.
    */
   isActive(obj: Obj): boolean {
     return this.#activeObjects.has(getWeakRef(obj));
