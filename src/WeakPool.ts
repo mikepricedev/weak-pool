@@ -232,6 +232,28 @@ export class WeakPool<Obj extends UnknownObject> {
 
     setTimeout(this.#updatePoolSize, 0);
   }
+
+  /**
+   * Determine if an object is currently active i.e. has been acquired from
+   * the pool.
+   */
+  isActive(obj: Obj): boolean {
+    return this.#activeObjects.has(getWeakRef(obj));
+  }
+
+  /**
+   * Determine if an object is currently in the strongly referenced object pool.
+   */
+  isStrongPooled(obj: Obj): boolean {
+    return this.#strongPool.includes(obj);
+  }
+
+  /**
+   * Determines if an object is currently in the weakly referenced object pool.
+   */
+  isWeakPooled(obj: Obj): boolean {
+    return this.#weakPool.has(getWeakRef(obj));
+  }
 }
 
 export default WeakPool;
